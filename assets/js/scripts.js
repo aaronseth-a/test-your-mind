@@ -1,4 +1,4 @@
-debugger;
+//debugger;
 
 /*
     TABLE OF CONTENTS (#000)
@@ -8,10 +8,31 @@ debugger;
     ------------------------
 */
 
-var nextBttn = document.getElementById("nextButton");
-var quizStarted = false;
-var quizEnded = false;
+var timeDisplay = document.getElementById("timer");
+var grade = document.getElementById("grade");
+var introScreen = document.getElementById("intro");
+var quizForm = document.getElementById("quizForm");
+var startBttn = document.getElementById("startButton");
+var choiceList = document.getElementById("answers");
+
 var incrementer = 0;
+var initialTime = 45;
+var quizTime = initialTime;
+quizStart = false;
+
+var quizTimer =    
+   setInterval(function(){
+        if(quizStart){
+            quizTime--;
+            timeDisplay.textContent = quizTime;
+            if(quizTime === 0){
+                clearInterval(quizTimer);
+                quizTime = initialTime;
+                alert("Time's Up!");
+            }
+        }
+    },1000);
+
 var quiz = [];
 
 quiz[0]= ["Question 1", 
@@ -31,54 +52,65 @@ quiz[1]= ["Question 2",
         ], 
         "TEST 3"];
 
-nextBttn.addEventListener("click", function(){
+startBttn.addEventListener("click", function(event){
+    event.preventDefault();
+    introScreen.setAttribute("style", "display: none");
+    quizForm.setAttribute("style", "display: block");
+    timeDisplay.textContent = quizTime;
+    quizStart = true;
+
+    loadQuestion();
+});
+
+choiceList.addEventListener("click", function(event){
     event.preventDefault();
     
-    if(quizStarted && !quizEnded){
-        document.getElementById("question").textContent = quiz[incrementer][0];
-        let answerList = document.getElementById("answers");
-        while (answerList.hasChildNodes()){
-            answerList.removeChild(answerList.firstChild);
-        }
-        for(let n = 0; n<4; n++){
-            let listItem = document.createElement("li");
-            listItem.textContent = quiz[incrementer][1][n];
-            answerList.appendChild(listItem);
-        }
-        incrementer++;
-        if(incrementer === quiz.length){
-            quizEnded = true;
-            alert("Quiz Ended");
-        }
-    } else{
-        quizStarted = true;
-        document.getElementById("question").textContent = quiz[incrementer][0];
-        let answerList = document.getElementById("answers");
-        while (answerList.hasChildNodes()){
-            answerList.removeChild(answerList.firstChild);
-        }
-        for(let n = 0; n<4; n++){
-            let listItem = document.createElement("li");
-            listItem.textContent = quiz[incrementer][1][n];
-            answerList.appendChild(listItem);
-        }
-        incrementer++;
+    let element = event.target;
+
+    console.log(element.textContent);
+    console.log(quiz[incrementer][2]);
+
+    if(element.textContent === quiz[incrementer][2]){
+        let soundFile = new Audio("./assets/audio/644948__craigscottuk__quiz-gameshow-correct-ping-01.mp3");
+        soundFile.play();
+        grade.textContent = "Correct";
+    } else {
+        let soundFile = new Audio("./assets/audio/720893__baggonotes__incorrect_buzz.wav");
+        soundFile.play();
+        grade.textContent = "Incorrect";
+        lessTime(15);
     }
-})
+    incrementer++;
 
+    setTimeout(function(){if(!quizEnded()){  //check to see if game has ended
+        loadQuestion();
+    } else{
+        clearInterval(quizTimer);
+        alert("Quiz Ended");
+    }}, 3000);
+});
 
+function loadQuestion(){
+    grade.textContent = "";
+    while (choiceList.hasChildNodes()){
+        choiceList.removeChild(choiceList.firstChild);
+    } 
+    
+    document.getElementById("question").textContent = quiz[incrementer][0];
+        
+        for(let n = 0; n<4; n++){
+            let listItem = document.createElement("li");
+            let buttonElem = document.createElement("button");
+            buttonElem.textContent = quiz[incrementer][1][n];
+            choiceList.appendChild(listItem);
+            listItem.appendChild(buttonElem);
+        }
+}
 
+function quizEnded(){
+    return (quiz.length === incrementer || quizTime === 0);
+}
 
-console.log(quiz[0][0][0]);
-
-// for(let i =0; i<quiz.length; i++){
-//     document.getElementById("question").textContent = quiz[i][0];
-//     for(let n = 0; n<4; n++){
-//         let answerList = document.getElementById("answers");
-//         let listItem = document.createElement("li");
-//         console.log(quiz[i][1][n]);
-//          listItem.textContent = quiz[i][1][n];
-//          console.log(listItem.textContent);
-//          answerList.appendChild(listItem);
-//     } 
-// }
+function lessTime(amount){
+    quizTime -= amount;
+}
