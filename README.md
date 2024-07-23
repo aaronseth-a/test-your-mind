@@ -6,7 +6,7 @@ This is just a simple quiz for a light refresher on some Javascript basics. It's
 
 ## INSTALLATION
 
-No installation is necessary. Simply go to the link:   and play. 
+No installation is necessary. Simply go to the link: <a href="https://aaronseth-a.github.io/test-your-mind/">https://aaronseth-a.github.io/test-your-mind/</a>  and play. 
 
 ## CRITERIA
 
