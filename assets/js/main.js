@@ -161,6 +161,7 @@ function loadQuestion(){
             let listItem = document.createElement("li");
             let buttonElem = document.createElement("button");
             buttonElem.textContent = quiz[incrementer][1][n];
+            buttonElem.classList.add('my-1');
             choiceList.appendChild(listItem);
             listItem.appendChild(buttonElem);
         }
